@@ -1,4 +1,4 @@
-package session_storage_bench
+package main
 
 import (
 	"math/rand"
@@ -7,14 +7,20 @@ import (
 )
 
 type RequestInfo interface {
-	MakeRequest()
+	//	MakeRequest()
 	IsFailed() bool
+	SetIsFailed(bool)
 	GetDuration() time.Duration
+	addLock() bool
+	deleteLock() bool
+	getData() bool
+	setData() bool
+	initConnect() bool
+	closeConnect() bool
 }
 
 type BaseRequestInfo struct {
 	key                  string
-	duration             time.Duration
 	initConnectDuration  time.Duration
 	addLockDuration      time.Duration
 	getDuration          time.Duration
@@ -31,57 +37,30 @@ func NewBaseRequestInfo() *BaseRequestInfo {
 }
 
 func (this *BaseRequestInfo) addLock() bool {
-	return false
+	return true
 }
+
 func (this *BaseRequestInfo) deleteLock() bool {
-	return false
+	return true
 }
 func (this *BaseRequestInfo) getData() bool {
-	return false
+	return true
 }
 func (this *BaseRequestInfo) setData() bool {
-	return false
+	return true
 }
 func (this *BaseRequestInfo) initConnect() bool {
-	return false
+	return true
 }
 func (this *BaseRequestInfo) closeConnect() bool {
-	return false
+	return true
 }
 func (this *BaseRequestInfo) IsFailed() bool {
 	return this.isFailed
 }
-func (this *BaseRequestInfo) GetDuration() time.Duration {
-	return this.getDuration
+func (this *BaseRequestInfo) SetIsFailed(isFailed bool) {
+	this.isFailed = isFailed
 }
-
-func (this *BaseRequestInfo) MakeRequest() {
-	this.isFailed = true
-
-	this.initConnect()
-	lockResult := this.addLock()
-	if !lockResult {
-		return
-	}
-
-	getResult := this.getData()
-	if !getResult {
-		return
-	}
-
-	time.Sleep(200 * time.Millisecond)
-
-	setResult := this.setData()
-	if !setResult {
-		return
-	}
-
-	unlockResult := this.deleteLock()
-	if !unlockResult {
-		return
-	}
-	this.closeConnect()
-	this.isFailed = false
-
-	this.duration = this.initConnectDuration + this.addLockDuration + this.getDuration + this.setDuration + this.deleteLockDuration + this.closeConnectDuration
+func (this *BaseRequestInfo) GetDuration() time.Duration {
+	return this.initConnectDuration + this.addLockDuration + this.getDuration + this.setDuration + this.deleteLockDuration + this.closeConnectDuration
 }

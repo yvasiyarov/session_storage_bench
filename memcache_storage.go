@@ -1,4 +1,4 @@
-package session_storage_bench
+package main
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ var persistentMemcacheConnect *memcache.Client
 
 func NewMemcacheRequestInfo(baseRequest *BaseRequestInfo) *MemcacheRequestInfo {
 	r := &MemcacheRequestInfo{BaseRequestInfo: baseRequest}
-	r.hostAndPort = *memcacheHostAndPort
+	r.hostAndPort = *storageAddress
 	return r
 }
 
